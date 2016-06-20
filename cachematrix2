@@ -1,0 +1,42 @@
+##  this function creates a special “matrix” object that can cache its inverse.
+
+makeCacheMatrix <- function(x = ourmatrix()) {
+  
+  m = NULL
+  set = function(y) {
+    #  `<<-`   it assigns a value to an object in an environment 
+    
+    m <<- NULL
+  }
+  get = function() x
+  setinverse = function(inverse) m <<- inverse 
+  getinverse = function() m
+  list(set=set, get=get, setinverse=setinverse, getinverse=getinverse)
+  
+}
+
+
+## it returns inverse of the original matrix input to makeCacheMatrix()
+
+cacheSolve <- function(x, ...) {
+  ## Return a matrix that is the inverse of 'x'
+  m = x$getinverse()
+  
+  # if the inverse has already been calculated
+  if (!is.null(m)){
+    # get it from cache and skip the computation. 
+    message("getting cached data")
+    return(m)
+  }
+  
+  # other than that, it  calculates the inverse 
+  data = x$get()
+  m = solve(data, ...)   #This generic function solves the equation a %*% x = b for x,
+                         #where b can be either a vector or a matrix.
+  
+  #  inverse value is set by the cache
+  x$setinverse(m)
+  
+  return(m)
+  
+}
